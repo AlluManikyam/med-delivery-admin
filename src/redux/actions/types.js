@@ -1,0 +1,1 @@
+export const STORE_LOGIN_DATA = "STORE_LOGIN_DATA";
