@@ -125,7 +125,7 @@ body {
 .orders {
   width: 85px;
   height: 32px;
-  margin: 25px 50px;
+  margin: 25px 0px;
   opacity: 0.8;
   font-family: Roboto;
   font-size: 28px;
@@ -138,10 +138,10 @@ body {
   color: #000000;
 }
 
-.sidebar ul{
+.sidebar ul {
   padding: 0;
 }
-.sidebar ul li{
+.sidebar ul li {
   display: flex;
   align-items: center;
   padding: 20px;
@@ -151,9 +151,9 @@ body {
   cursor: pointer;
 }
 
-.sidebar .active{
-  background-color: #fff!important;
-  color: #007a73!important;;
+.sidebar .active {
+  background-color: #fff !important;
+  color: #007a73 !important;
 }
 
 .icon-size {
@@ -163,7 +163,7 @@ body {
   object-fit: contain;
 }
 
-.no-orders-icon{
+.no-orders-icon {
   width: 120px;
   height: 120px;
   margin: 0 50.5px 20px;
@@ -195,10 +195,132 @@ body {
   text-align: left;
   color: #707070;
 }
-.new-order{
+.new-order {
+  margin: 30px 45px 0 !important;
+  padding: 10px 18px !important;
+  border-radius: 4px !important;
+  background-color: #007a73 !important;
+}
+.new-order-button {
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  background-color: #007a73 !important;
+}
 
-  margin: 30px 45px 0 !important;;
-  padding: 10px 18px !important;;
-  border-radius: 4px !important;;
-  background-color: #007a73!important;;
+.order-date-picker .react-date-picker__wrapper {
+  padding: 3px;
+}
+
+.search-bar {
+  width: 215px;
+  height: 34px;
+  padding: 10px 35px;
+  display: flex;
+  align-items: center;
+  border-radius: 35px;
+  border: solid 1px #ebebeb;
+  background-color: #ffffff;
+  background-image: url("/images/icons/search.png");
+  background-repeat: no-repeat;
+  background-position: 5% 50%;
+  outline: none;
+}
+
+.iconsearch {
+  position: absolute;
+  top: 25%;
+  z-index: 999;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  border-radius: 3px;
+}
+
+/* Table CSS */
+
+body {
+  font-family: "open sans", sans-serif;
+  font-size: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  text-align: left;
+  margin: 1px 3px 1px 0;
+  opacity: 0.8;
+  font-family: Roboto;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 0.5px;
+  text-align: left;
+  color: #000000;
+  border-bottom: 2px solid black;
+}
+
+thead button {
+  display: inline-block;
+  border: 0;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: inherit;
+  padding: 0.5em;
+  background-color: #fff;
+  margin-bottom: 1px;
+}
+thead button:focus {
+  outline: 0 !important;
+}
+
+thead button::after {
+  /* content: '👇☝️'; */
+  content: "\21C5";
+  display: inline-block;
+  margin-left: 1em;
+}
+thead button.ascending::after {
+  content: "\21A5";
+  display: inline-block;
+  margin-left: 1em;
+}
+
+thead button.descending::after {
+  content: "\21A7";
+  display: inline-block;
+  margin-left: 1em;
+}
+
+tbody td {
+  padding: 1em;
+  border-bottom: 1px solid #ccc;
+}
+
+tbody tr:hover {
+  background-color: #eee;
+}
+
+.react-date-picker__inputGroup__input:invalid {
+  background-color: transparent;
+}
+
+.react-date-picker__button__icon:active {
+  background-color: transparent;
+  outline: none;
+}
+.react-date-picker__clear-button:focus {
+  background-color: transparent;
+  outline: none;
+}
+
+.load-more-button {
+  margin-top: 10px;
+  border-radius: 4px !important;
+  color: #007a73 !important;
+  border: solid 1px #007a73 !important;
+  background-color: #ffffff !important;
 }
