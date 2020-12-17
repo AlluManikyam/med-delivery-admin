@@ -149,7 +149,7 @@ export default function Activity() {
           <ActivityTable products={users.user} />
         </div>
       ) : (
-        <div className="dashboard hv-100 align-items-center">
+        <div className="dashboard hv-85 align-items-center">
           <div>
             <img
               className="no-orders-icon"

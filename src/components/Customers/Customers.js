@@ -115,7 +115,7 @@ const UsersTable = (props) => {
   );
 };
 
-export default function Users() {
+export default function Customers() {
   return (
     <>
       {users && users.user.length > 0 ? (
@@ -135,7 +135,7 @@ export default function Users() {
           <UsersTable products={users.user} />
         </div>
       ) : (
-        <div className="dashboard hv-100 align-items-center">
+        <div className="dashboard hv-85 align-items-center">
           <div>
             <img
               className="no-orders-icon"

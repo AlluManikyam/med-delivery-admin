@@ -12,7 +12,7 @@ import Sidebar from "./components/Layouts/Sidebar";
 import NotFound from "./components/Layouts/NotFound";
 import OrdersPage from "./components/Orders/Orders";
 import ActivityPage from "./components/Activity/Activity";
-import UsersPage from "./components/Users/Users";
+import CustomerPage from "./components/Customers/Customers";
 
 // Checks the user is login or not and then redirecting to the respective page
 const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -56,7 +56,7 @@ class App extends React.Component {
           <Route exact strict path={"/"} component={SignInComponent} />
           <PrivateRoute exact path="/orders" component={OrdersPage} />
           <PrivateRoute exact path="/activity" component={ActivityPage} />
-          <PrivateRoute exact path="/users" component={UsersPage} />
+          <PrivateRoute exact path="/users" component={CustomerPage} />
           <Route exact path="/*" component={NotFound} />
         </Switch>
       </Router>

@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  FormGroup,
+  Label,
+  Input,
+} from "reactstrap";
 import DatePicker from "react-date-picker";
 let users = require("../../constants/users.json");
 
@@ -118,6 +127,33 @@ const OrdersTable = (props) => {
 
 export default function Orders() {
   const [date, setDate] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [modalType, setModalType] = useState("add");
+  const [selectedRecord, setSelectedRecord] = useState({});
+  const [description, setDescription] = useState("");
+  const toggle = () => setModal(!modal);
+  //! Edit Maintenance
+  const EditMaintenance = (record) => {
+    setSelectedRecord(record);
+    setModal(!modal);
+    setModalType("edit");
+    setDate(new Date(record.date));
+    setDescription(record.desc);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  //! Add Maintenance
+  const AddNewOrder = () => {
+    setModal(!modal);
+    setDate(new Date());
+    setDescription("");
+    setModalType("add");
+  };
+
+  const onSubmitNewOrder = () => {};
   return (
     <>
       {users && users.user.length < 0 ? (
@@ -152,7 +188,7 @@ export default function Orders() {
           <OrdersTable products={users.user} />
         </div>
       ) : (
-        <div className="dashboard hv-100 align-items-center">
+        <div className="dashboard hv-85 align-items-center">
           <div>
             <img
               className="no-orders-icon"
@@ -163,12 +199,92 @@ export default function Orders() {
             <div className="you-dont-have-any-orders-right-now">
               You don’t have any orders right now.
             </div>
-            <button type="submit" className="row btn btn-info new-order">
+            <button
+              type="submit"
+              onClick={AddNewOrder}
+              className="row btn btn-info new-order"
+            >
               Add New Order
             </button>
           </div>
         </div>
       )}
+      {/* Add or Edit Maintenance UI */}
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle} className="w-100">
+          {modalType === "add" ? "Add New Order" : "Edit Order"}
+        </ModalHeader>
+        <ModalBody>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="name" id="name" placeholder=" " />
+              <label for="name">Name</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input
+                type="text"
+                name="apartment"
+                id="apartment"
+                placeholder=" "
+              />
+              <label for="apartment">Apartment</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="city" id="city" placeholder=" " />
+              <label for="city">City</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="state" id="state" placeholder=" " />
+              <label for="state">State</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="zip" id="zip" placeholder=" " />
+              <label for="zip">ZIP</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="phone" id="phone" placeholder=" " />
+              <label for="zip">Phone</label>
+            </div>
+          </div>
+          <div className="mb-3 floating">
+            <div class="field">
+              <input type="text" name="amount" id="amount" placeholder=" " />
+              <label for="amount">Amount (USD)</label>
+            </div>
+          </div>
+          <FormGroup tag="fieldset">
+            <label>QUARANTINE</label>
+            <FormGroup check>
+              <Label check>
+                <Input type="radio" name="quarantine" /> Yes
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input type="radio" name="quarantine" /> No
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <FormGroup className="w-100">
+            <Button
+              className="w-100 px-4 order-button"
+              onClick={onSubmitNewOrder}
+            >
+              {modalType === "add" ? "Add Order" : "Update Order"}
+            </Button>
+          </FormGroup>
+        </ModalBody>
+      </Modal>
     </>
   );
 }

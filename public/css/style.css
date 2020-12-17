@@ -87,6 +87,10 @@ body {
   height: 100vh !important;
 }
 
+.hv-85 {
+  height: 85vh !important;
+}
+
 .bg-body {
   background: #f7f7f7;
 }
@@ -323,4 +327,110 @@ tbody tr:hover {
   color: #007a73 !important;
   border: solid 1px #007a73 !important;
   background-color: #ffffff !important;
+}
+
+.modal-title {
+  width: 100% !important;
+  text-align: center;
+}
+
+/* Form Styles */
+
+/**
+* Make the field a flex-container, reverse the order so label is on top.
+*/
+
+.field {
+  display: flex;
+  flex-flow: column-reverse;
+  border: 1px solid #c1c1c1;
+}
+/**
+* Add a transition to the label and input.
+* I'm not even sure that touch-action: manipulation works on
+* inputs, but hey, it's new and cool and could remove the 
+* pesky delay.
+*/
+.floating label,
+input {
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+
+.floating input {
+  font-size: 1.5em;
+  border: 0;
+  font-family: inherit;
+  -webkit-appearance: none;
+  border-radius: 0;
+  padding: 0;
+  cursor: text;
+}
+
+.floating input:focus {
+  outline: 0;
+}
+
+.floating label {
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 0 9px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.23;
+  letter-spacing: -0.1px;
+  text-align: left;
+  color: #707070;
+}
+/**
+* Translate down and scale the label up to cover the placeholder,
+* when following an input (with placeholder-shown support).
+* Also make sure the label is only on one row, at max 2/3rds of the
+* field—to make sure it scales properly and doesn't wrap.
+*/
+.floating input:placeholder-shown + label {
+  cursor: text;
+  max-width: 66.66%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform-origin: left bottom;
+  transform: translate(0, 1.45rem) scale(1.5);
+}
+/**
+* By default, the placeholder should be transparent. Also, it should 
+* inherit the transition.
+*/
+::-webkit-input-placeholder {
+  opacity: 0;
+  transition: inherit;
+}
+/**
+* Show the placeholder when the input is focused.
+*/
+.floating input:focus::-webkit-input-placeholder {
+  opacity: 1;
+}
+/**
+* When the element is focused, remove the label transform.
+* Also, do this when the placeholder is _not_ shown, i.e. when 
+* there's something in the input at all.
+*/
+.floating input:not(:placeholder-shown) + label,
+.floating input:focus + label {
+  transform: translate(0, 0) scale(1);
+  cursor: pointer;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.order-button {
+  background-color: #007a73 !important;
+  padding: 10px !important;
+}
+
+.order-button:focus {
+  outline: none !important;
 }
