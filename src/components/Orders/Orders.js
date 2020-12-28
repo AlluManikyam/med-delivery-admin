@@ -9,6 +9,8 @@ import {
   Input,
 } from "reactstrap";
 import DatePicker from "react-date-picker";
+import { Formik } from "formik";
+import * as Yup from "yup";
 let users = require("../../constants/users.json");
 
 const useSortableData = (items, config = null) => {
@@ -153,7 +155,14 @@ export default function Orders() {
     setModalType("add");
   };
 
-  const onSubmitNewOrder = () => {};
+  const onSubmitNewOrder = (values, { setSubmitting }) => {
+    setTimeout(() => {
+      alert(
+        "Hello your submitted values are" + JSON.stringify(values, null, 2)
+      );
+      setSubmitting(false);
+    }, 500);
+  };
   return (
     <>
       {users && users.user.length < 0 ? (
@@ -215,74 +224,221 @@ export default function Orders() {
           {modalType === "add" ? "Add New Order" : "Edit Order"}
         </ModalHeader>
         <ModalBody>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="name" id="name" placeholder=" " />
-              <label for="name">Name</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input
-                type="text"
-                name="apartment"
-                id="apartment"
-                placeholder=" "
-              />
-              <label for="apartment">Apartment</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="city" id="city" placeholder=" " />
-              <label for="city">City</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="state" id="state" placeholder=" " />
-              <label for="state">State</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="zip" id="zip" placeholder=" " />
-              <label for="zip">ZIP</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="phone" id="phone" placeholder=" " />
-              <label for="zip">Phone</label>
-            </div>
-          </div>
-          <div className="mb-3 floating">
-            <div class="field">
-              <input type="text" name="amount" id="amount" placeholder=" " />
-              <label for="amount">Amount (USD)</label>
-            </div>
-          </div>
-          <FormGroup tag="fieldset">
-            <label>QUARANTINE</label>
-            <FormGroup check>
-              <Label check>
-                <Input type="radio" name="quarantine" /> Yes
-              </Label>
-            </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input type="radio" name="quarantine" /> No
-              </Label>
-            </FormGroup>
-          </FormGroup>
-          <FormGroup className="w-100">
-            <Button
-              className="w-100 px-4 order-button"
-              onClick={onSubmitNewOrder}
-            >
-              {modalType === "add" ? "Add Order" : "Update Order"}
-            </Button>
-          </FormGroup>
+          <Formik
+            initialValues={{
+              name: "",
+              apartment: "",
+              city: "",
+              state: "",
+              zip: "",
+              phone: "",
+              amount: "",
+            }}
+            onSubmit={onSubmitNewOrder}
+            validationSchema={Yup.object().shape({
+              name: Yup.string().required("Name must be required"),
+              apartment: Yup.string().required("Apartment must be required"),
+              city: Yup.string().required("City must be required"),
+              state: Yup.string().required("State must be required"),
+              zip: Yup.string().required("Zipcode must be required"),
+              phone: Yup.string().required("Phone number must be required"),
+              amount: Yup.string().required("Amount must be required"),
+            })}
+          >
+            {(props) => {
+              const {
+                values,
+                touched,
+                errors,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+              } = props;
+              return (
+                <React.Fragment>
+                  <form
+                    className="p-3"
+                    onSubmit={handleSubmit}
+                  >
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          placeholder=" "
+                          value={values.name}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.name && touched.name
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="name">Name</label>
+                      </div>
+                      {errors.name && touched.name && (
+                        <div className="input-feedback">{errors.name}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="apartment"
+                          id="apartment"
+                          placeholder=" "
+                          value={values.apartment}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.apartment && touched.apartment
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="apartment">Apartment</label>
+                      </div>
+                      {errors.apartment && touched.apartment && (
+                        <div className="input-feedback">{errors.apartment}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="city"
+                          id="city"
+                          placeholder=" "
+                          value={values.city}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.city && touched.city
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="city">City</label>
+                      </div>
+                      {errors.city && touched.city && (
+                        <div className="input-feedback">{errors.city}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="state"
+                          id="state"
+                          placeholder=" "
+                          value={values.state}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.state && touched.state
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="state">State</label>
+                      </div>
+                      {errors.state && touched.state && (
+                        <div className="input-feedback">{errors.state}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="zip"
+                          id="zip"
+                          placeholder=" "
+                          value={values.zip}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.zip && touched.zip
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="zip">ZIP</label>
+                      </div>
+                      {errors.zip && touched.zip && (
+                        <div className="input-feedback">{errors.zip}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="phone"
+                          id="phone"
+                          placeholder=" "
+                          value={values.phone}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.phone && touched.phone
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="phone">Phone</label>
+                      </div>
+                      {errors.phone && touched.phone && (
+                        <div className="input-feedback">{errors.phone}</div>
+                      )}
+                    </div>
+                    <div className="mb-3 floating">
+                      <div class="field">
+                        <input
+                          type="text"
+                          name="amount"
+                          id="amount"
+                          placeholder=" "
+                          value={values.amount}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          className={
+                            errors.amount && touched.amount
+                              ? "text-input error"
+                              : "text-input"
+                          }
+                        />
+                        <label for="amount">Amount (USD)</label>
+                      </div>
+                      {errors.amount && touched.amount && (
+                        <div className="input-feedback">{errors.amount}</div>
+                      )}
+                    </div>
+                    <FormGroup tag="fieldset">
+                      <label>QUARANTINE</label>
+                      <FormGroup check>
+                        <Label check>
+                          <Input type="radio" name="quarantine" /> Yes
+                        </Label>
+                      </FormGroup>
+                      <FormGroup check>
+                        <Label check>
+                          <Input type="radio" name="quarantine" /> No
+                        </Label>
+                      </FormGroup>
+                    </FormGroup>
+                    <FormGroup className="w-100">
+                      <Button
+                        className="w-100 px-4 order-button"
+                      >
+                        {modalType === "add" ? "Add Order" : "Update Order"}
+                      </Button>
+                    </FormGroup>
+                  </form>
+                </React.Fragment>
+              );
+            }}
+          </Formik>
         </ModalBody>
       </Modal>
     </>

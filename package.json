@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.3",
+    "formik": "^2.2.6",
     "material-table": "^1.69.1",
     "react": "^17.0.0",
     "react-date-picker": "^8.0.5",
@@ -17,7 +18,8 @@
     "reactstrap": "^8.7.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
-    "sweetalert": "^2.1.2"
+    "sweetalert": "^2.1.2",
+    "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start",

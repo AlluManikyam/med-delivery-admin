@@ -358,12 +358,11 @@ input {
 }
 
 .floating input {
-  font-size: 1.5em;
   border: 0;
   font-family: inherit;
   -webkit-appearance: none;
   border-radius: 0;
-  padding: 0;
+  padding: 6px;
   cursor: text;
 }
 
@@ -372,8 +371,9 @@ input {
 }
 
 .floating label {
-  font-size: 13px;
+  font-size: 13px!important;
   letter-spacing: 0.05em;
+  margin: 0;
   padding: 0 9px;
   font-stretch: normal;
   font-style: normal;
@@ -433,4 +433,8 @@ input {
 
 .order-button:focus {
   outline: none !important;
+}
+
+.input-feedback{
+  color: red !important;
 }

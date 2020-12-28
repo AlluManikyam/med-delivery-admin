@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import DatePicker from "react-date-picker";
-let users = require("../../constants/users.json");
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
@@ -118,6 +117,8 @@ const ActivityTable = (props) => {
 
 export default function Activity() {
   const [date, setDate] = useState(null);
+  const [users,setUsers]=([])
+
   return (
     <>
       {users && users.user.length > 0 ? (
@@ -146,7 +147,7 @@ export default function Activity() {
               </div>
             </div>
           </div>
-          <ActivityTable products={users.user} />
+          <ActivityTable products={users} />
         </div>
       ) : (
         <div className="dashboard hv-85 align-items-center">

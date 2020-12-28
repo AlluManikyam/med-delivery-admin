@@ -116,6 +116,7 @@ const UsersTable = (props) => {
 };
 
 export default function Customers() {
+  const [users,setUsers]=([])
   return (
     <>
       {users && users.user.length > 0 ? (
@@ -132,7 +133,7 @@ export default function Customers() {
               ></input>
             </div>
           </div>
-          <UsersTable products={users.user} />
+          <UsersTable products={users} />
         </div>
       ) : (
         <div className="dashboard hv-85 align-items-center">
@@ -142,7 +143,7 @@ export default function Customers() {
               alt="no-orders"
               src="/images/icons/no-users@3x.png"
             />
-            <div className="no-orders-title">No Orders</div>
+            <div className="no-orders-title">No Customers</div>
             <div className="you-dont-have-any-orders-right-now">
               You don’t have any Customers right now.
             </div>
