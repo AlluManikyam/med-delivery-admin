@@ -3,18 +3,18 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { storeLoginData } from "../../redux/actions/userActions";
 import swal from "sweetalert";
-let userJSONData = require("../../constants/login_details.json");
+import commonUtils from "../../utils/ApiCalls.js";
 
 class Login extends Component {
   constructor() {
     super();
     this.state = {
       userDetails: {
-        email: "",
+        username: "",
         password: "",
       },
       touched: {
-        email: false,
+        username: false,
         password: false,
       },
       loggedInStatus: false,
@@ -46,10 +46,10 @@ class Login extends Component {
   // Login validation
   validate() {
     const errors = {};
-    const { email, password } = this.state.userDetails;
+    const { username, password } = this.state.userDetails;
 
-    if (!email) {
-      errors.email = "Please enter email";
+    if (!username) {
+      errors.username = "Please enter username";
     }
     if (!password) {
       errors.password = "Please enter password";
@@ -63,29 +63,31 @@ class Login extends Component {
   // Submitting login
   onSubmit(e) {
     e.preventDefault();
-    const { email, password } = this.state.userDetails;
-    if (userJSONData.username === email && userJSONData.password === password) {
-      localStorage.removeItem("email");
-      localStorage.removeItem("activityType");
-      this.props.storeLoginData(userJSONData);
-      localStorage.setItem("email", email);
-      this.setState({
-        user: {
-          email: "",
-          password: "",
-        },
-        touched: {
-          email: false,
-          password: false,
-        },
-        loginCompleted: true,
-      });
-    } else {
-      swal({
-        text: "Please enter valid credentials",
-        icon: "error",
-      });
-    }
+    const { username, password } = this.state.userDetails;
+    let payload = { phone: username, password };
+    commonUtils.login(payload).then((response) => {
+      if (response && response.status === "success") {
+        localStorage.removeItem("username");
+        localStorage.setItem("username", username);
+        localStorage.setItem("userData", JSON.stringify(response.data));
+        this.setState({
+          user: {
+            username: "",
+            password: "",
+          },
+          touched: {
+            username: false,
+            password: false,
+          },
+          loginCompleted: true,
+        });
+      } else {
+        swal({
+          text: response.msg,
+          icon: "error",
+        });
+      }
+    });
   }
 
   render() {
@@ -98,20 +100,22 @@ class Login extends Component {
         <div className="d-flex justify-content-center align-items-center bg-body hv-100">
           <div className="login">
             <form onSubmit={this.onSubmit}>
-              <div className="logo-box"><div className="logo">LOGO</div></div>
+              <div className="logo-box">
+                <div className="logo">LOGO</div>
+              </div>
               <div className="form-group row">
-                <label>Email</label>
+                <label>username</label>
                 <input
                   type="text"
-                  name="email"
-                  value={userDetails.email}
+                  name="username"
+                  value={userDetails.username}
                   onChange={this.onChange}
                   onBlur={this.onBlur}
                   className="form-control"
                   required
                 />
-                {touched.email && !!errors.email && (
-                  <span className="error">{errors.email}</span>
+                {touched.username && !!errors.username && (
+                  <span className="error">{errors.username}</span>
                 )}
               </div>
               <div className="form-group row">

@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 
 class Navbar extends Component {
   logOutUser() {
-    localStorage.removeItem("email");
+    localStorage.removeItem("username");
     localStorage.removeItem("activityType");
     this.props.history.push("/");
   }
   render() {
-    let userInfo = this.props.userInfo.loginData;
+    let userInfo =JSON.parse(localStorage.getItem("userData"))
     return (
       <nav className="navbar navbar-expand-lg bg-blue">
         <button
@@ -28,7 +28,7 @@ class Navbar extends Component {
           <div className="navbar-nav ml-auto">
             <ul>
               <li>
-                {userInfo&&userInfo.name ? userInfo.name : null}
+                {userInfo&&userInfo.full_name ? userInfo.full_name : null}
               </li>
               <li onClick={this.logOutUser.bind(this)}>Logout</li>
             </ul>

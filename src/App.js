@@ -19,7 +19,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      localStorage.getItem("email") ? (
+      localStorage.getItem("username") ? (
         <>
           <Navbar />
           <div className="d-flex">
@@ -41,7 +41,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 // If user login then redirecting to the home page otherwise redirecting to signin page
 const SignInComponent = () => {
-  if (localStorage.getItem("email") != null) {
+  if (localStorage.getItem("username") != null) {
     return <Redirect to="/orders" />;
   } else {
     return <LoginPage />;
