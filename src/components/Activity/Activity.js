@@ -117,7 +117,7 @@ const ActivityTable = (props) => {
 
 export default function Activity() {
   const [date, setDate] = useState(null);
-  const [users,setUsers]=([])
+  const [users]=([])
 
   return (
     <>

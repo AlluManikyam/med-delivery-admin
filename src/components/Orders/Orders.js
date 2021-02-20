@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -11,7 +11,9 @@ import {
 import DatePicker from "react-date-picker";
 import { Formik } from "formik";
 import * as Yup from "yup";
-let users = require("../../constants/users.json");
+import commonUtils from "../../utils/ApiCalls.js";
+import swal from "sweetalert";
+let moment = require("moment");
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
@@ -48,7 +50,9 @@ const useSortableData = (items, config = null) => {
 };
 
 const OrdersTable = (props) => {
-  const { items, requestSort, sortConfig } = useSortableData(props.products);
+  const { items, requestSort, sortConfig } = useSortableData(
+    props.customerOrders
+  );
   const getClassNamesFor = (name) => {
     if (!sortConfig) {
       return;
@@ -66,63 +70,75 @@ const OrdersTable = (props) => {
                 onClick={() => requestSort("name")}
                 className={getClassNamesFor("name")}
               >
-                Name
+                CUSTOMER NAME
               </button>
             </th>
             <th>
               {" "}
               <button
                 type="button"
-                onClick={() => requestSort("age")}
-                className={getClassNamesFor("age")}
+                onClick={() => requestSort("phone")}
+                className={getClassNamesFor("phone")}
               >
-                Age
+                PHONE
               </button>
             </th>
             <th>
               <button
                 type="button"
-                onClick={() => requestSort("gender")}
-                className={getClassNamesFor("gender")}
+                onClick={() => requestSort("created_date")}
+                className={getClassNamesFor("created_date")}
               >
-                Gender
+                ORDER ON
               </button>
             </th>
             <th>
               <button
                 type="button"
-                onClick={() => requestSort("phoneNo")}
-                className={getClassNamesFor("phoneNo")}
+                onClick={() => requestSort("quarantine_status")}
+                className={getClassNamesFor("quarantine_status")}
               >
-                Phone Number
+                QUARANTINE
               </button>
             </th>
             <th>
               <button
                 type="button"
-                onClick={() => requestSort("email")}
-                className={getClassNamesFor("email")}
+                onClick={() => requestSort("amount")}
+                className={getClassNamesFor("amount")}
               >
-                Email
+                AMOUNT
+              </button>
+            </th>
+            <th>
+              <button
+                type="button"
+                onClick={() => requestSort("delivery_status")}
+                className={getClassNamesFor("delivery_status")}
+              >
+                DELIVERY STATUS
               </button>
             </th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>
+          {items.map((item, key) => (
+            <tr key={key}>
               <td>{item.name}</td>
-              <td>${item.age}</td>
-              <td>{item.gender}</td>
-              <td>{item.phoneNo}</td>
-              <td>{item.email}</td>
+              <td>{item.phone}</td>
+              <td>
+                {moment(new Date(item.created_date)).format("DD MMM YYYY")}
+              </td>
+              <td>{item.quarantine_status ? "Yes" : "No"}</td>
+              <td>${item.amount}</td>
+              <td>{item.delivery_status}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="d-flex justify-content-center">
+      {/* <div className="d-flex justify-content-center">
         <button className="row btn btn-info load-more-button">Load More</button>
-      </div>
+      </div> */}
     </>
   );
 };
@@ -131,41 +147,54 @@ export default function Orders() {
   const [date, setDate] = useState(null);
   const [modal, setModal] = useState(false);
   const [modalType, setModalType] = useState("add");
-  const [selectedRecord, setSelectedRecord] = useState({});
-  const [description, setDescription] = useState("");
+  const [ordersList, setOrdersList] = useState([]);
+  const [quarantineStatus, setQuarantineStatus] = useState(0);
   const toggle = () => setModal(!modal);
-  //! Edit Maintenance
-  const EditMaintenance = (record) => {
-    setSelectedRecord(record);
-    setModal(!modal);
-    setModalType("edit");
-    setDate(new Date(record.date));
-    setDescription(record.desc);
-  };
 
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
+  useEffect(() => {
+    let user_id = JSON.parse(localStorage.getItem("userData"))._id;
+    commonUtils.getOrders(user_id).then((response) => {
+      if (response && response.status === "success") {
+        setOrdersList(response.data);
+      }
+    });
+  }, []);
   //! Add Maintenance
   const AddNewOrder = () => {
     setModal(!modal);
     setDate(new Date());
-    setDescription("");
     setModalType("add");
   };
-
-  const onSubmitNewOrder = (values, { setSubmitting }) => {
-    setTimeout(() => {
-      alert(
-        "Hello your submitted values are" + JSON.stringify(values, null, 2)
-      );
-      setSubmitting(false);
-    }, 500);
+  const changeQuarantineStatus = (status) => {
+    setQuarantineStatus(status);
+  };
+  const onSubmitNewOrder = (values) => {
+    values.user_id = JSON.parse(localStorage.getItem("userData"))._id;
+    values.quarantine_status = quarantineStatus;
+    commonUtils.addOrder(values).then((response) => {
+      if (response && response.status === "success") {
+        swal({
+          text: response.msg,
+          icon: "success",
+        });
+        let user_id = JSON.parse(localStorage.getItem("userData"))._id;
+        commonUtils.getOrders(user_id).then((response) => {
+          if (response && response.status === "success") {
+            setOrdersList(response.data);
+          }
+        });
+      } else {
+        swal({
+          text: response.msg,
+          icon: "error",
+        });
+      }
+      setModal(!modal);
+    });
   };
   return (
     <>
-      {users && users.user.length < 0 ? (
+      {ordersList && ordersList.length > 0 ? (
         <div className="container">
           <div className="row">
             <div className="orders">Orders</div>
@@ -189,12 +218,15 @@ export default function Orders() {
                   dayPlaceholder="dd"
                 />
               </div>
-              <button className="row btn btn-info new-order-button">
+              <button
+                className="row btn btn-info new-order-button"
+                onClick={AddNewOrder}
+              >
                 Add New Order
               </button>
             </div>
           </div>
-          <OrdersTable products={users.user} />
+          <OrdersTable customerOrders={ordersList} />
         </div>
       ) : (
         <div className="dashboard hv-85 align-items-center">
@@ -223,7 +255,7 @@ export default function Orders() {
         <ModalHeader toggle={toggle} className="w-100">
           {modalType === "add" ? "Add New Order" : "Edit Order"}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody style={{ height: "80vh", overflowY: "scroll" }}>
           <Formik
             initialValues={{
               name: "",
@@ -256,10 +288,7 @@ export default function Orders() {
               } = props;
               return (
                 <React.Fragment>
-                  <form
-                    className="p-3"
-                    onSubmit={handleSubmit}
-                  >
+                  <form className="p-3" onSubmit={handleSubmit}>
                     <div className="mb-3 floating">
                       <div class="field">
                         <input
@@ -418,19 +447,29 @@ export default function Orders() {
                       <label>QUARANTINE</label>
                       <FormGroup check>
                         <Label check>
-                          <Input type="radio" name="quarantine" /> Yes
+                          <Input
+                            type="radio"
+                            name="quarantine"
+                            onChange={() => changeQuarantineStatus(1)}
+                            checked={quarantineStatus === 1}
+                          />{" "}
+                          Yes
                         </Label>
                       </FormGroup>
                       <FormGroup check>
                         <Label check>
-                          <Input type="radio" name="quarantine" /> No
+                          <Input
+                            type="radio"
+                            name="quarantine"
+                            onChange={() => changeQuarantineStatus(0)}
+                            checked={quarantineStatus === 0}
+                          />{" "}
+                          No
                         </Label>
                       </FormGroup>
                     </FormGroup>
                     <FormGroup className="w-100">
-                      <Button
-                        className="w-100 px-4 order-button"
-                      >
+                      <Button className="w-100 px-4 order-button">
                         {modalType === "add" ? "Add Order" : "Update Order"}
                       </Button>
                     </FormGroup>

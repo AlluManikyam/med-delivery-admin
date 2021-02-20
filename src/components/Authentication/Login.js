@@ -68,6 +68,7 @@ class Login extends Component {
     commonUtils.login(payload).then((response) => {
       if (response && response.status === "success") {
         localStorage.removeItem("username");
+        localStorage.setItem("authorization",response.token);
         localStorage.setItem("username", username);
         localStorage.setItem("userData", JSON.stringify(response.data));
         this.setState({

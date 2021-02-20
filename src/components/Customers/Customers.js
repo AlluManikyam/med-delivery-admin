@@ -1,5 +1,4 @@
 import React from "react";
-let users = require("../../constants/users.json");
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
@@ -116,7 +115,7 @@ const UsersTable = (props) => {
 };
 
 export default function Customers() {
-  const [users,setUsers]=([])
+  const [users]=([])
   return (
     <>
       {users && users.user.length > 0 ? (
