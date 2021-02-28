@@ -25,7 +25,7 @@ let commonUtils = {
        return response.data
       });
   },
-  getOrders(user_id) {
+  getPendingOrders(user_id) {
     const  authorization  =  localStorage.getItem("authorization");
     let options={
       headers: {
@@ -33,11 +33,38 @@ let commonUtils = {
       }
     }
     return axios
-      .get(`${global.baseUrl}/customer-order/${user_id}`,options)
+      .get(`${global.baseUrl}/customer-pending-orders/${user_id}`,options)
       .then((response) => {
        return response.data
       });
   },
-};
+  getActivityOrders(user_id) {
+    const  authorization  =  localStorage.getItem("authorization");
+    let options={
+      headers: {
+        Authorization: authorization
+      }
+    }
+    return axios
+      .get(`${global.baseUrl}/customer-activity-orders/${user_id}`,options)
+      .then((response) => {
+       return response.data
+      });
+  },
+  sendRequestToDriver(payload) {
+    const  authorization  =  localStorage.getItem("authorization");
+    let options={
+      headers: {
+        Authorization: authorization
+      }
+    }
+    return axios
+      .put(`${global.baseUrl}/send-request-to-driver`, payload,options)
+      .then((response) => {
+       return response.data
+      });
+  },
+
+}
 
 export default commonUtils;

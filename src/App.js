@@ -10,7 +10,7 @@ import LoginPage from "./components/Authentication/Login";
 import Navbar from "./components/Layouts/Navbar";
 import Sidebar from "./components/Layouts/Sidebar";
 import NotFound from "./components/Layouts/NotFound";
-import OrdersPage from "./components/Orders/Orders";
+import OrdersPage from "./components/Orders/AddNewOrder";
 import ActivityPage from "./components/Activity/Activity";
 import CustomerPage from "./components/Customers/Customers";
 

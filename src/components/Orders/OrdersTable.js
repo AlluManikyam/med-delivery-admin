@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import DatePicker from "react-date-picker";
-import commonUtils from "../../utils/ApiCalls.js";
+import React, { useEffect, useState } from "react";
 let moment = require("moment");
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
+
   const sortedItems = React.useMemo(() => {
     let sortableItems = [...items];
     if (sortConfig !== null) {
@@ -36,19 +35,52 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort, sortConfig };
 };
 
-const ActivityTable = (props) => {
-  const { items, requestSort, sortConfig } = useSortableData(props.orders);
+export default function OrdersTable(props) {
+  const {readyToDeliveryListRecords,sendReadyToDeliveryList}=props
+  const [readyToDeliveryList, setReadyToDeliveryList] = useState([]);
+
+  const { items, requestSort, sortConfig } = useSortableData(
+    props.customerOrders
+  );
+
   const getClassNamesFor = (name) => {
     if (!sortConfig) {
       return;
     }
     return sortConfig.key === name ? sortConfig.direction : undefined;
   };
+
+  useEffect(() => {
+    console.log("readyToDeliveryList..",readyToDeliveryList);
+    sendReadyToDeliveryList(readyToDeliveryList);
+  }, [readyToDeliveryList,sendReadyToDeliveryList]);
+
+  useEffect(() => {
+    sendReadyToDeliveryList(readyToDeliveryListRecords);
+    setReadyToDeliveryList(readyToDeliveryListRecords)
+  }, [sendReadyToDeliveryList,readyToDeliveryListRecords]);
+
+  const prepareReadyToDeliveryItems = (record) => {
+    let deliveryList = readyToDeliveryList.filter((rdl) => {
+      return rdl._id === record._id;
+    });
+    if (deliveryList.length) {
+      setReadyToDeliveryList(
+        readyToDeliveryList.filter((rdl) => {
+          return rdl._id !== record._id;
+        })
+      );
+    } else {
+      setReadyToDeliveryList([...readyToDeliveryList, record]);
+    }
+  };
+
   return (
     <>
       <table>
         <thead>
           <tr>
+            <th></th>
             <th>
               <button
                 type="button"
@@ -80,19 +112,10 @@ const ActivityTable = (props) => {
             <th>
               <button
                 type="button"
-                onClick={() => requestSort("created_date")}
-                className={getClassNamesFor("created_date")}
+                onClick={() => requestSort("quarantine_status")}
+                className={getClassNamesFor("quarantine_status")}
               >
-                DELIVERED ON
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                onClick={() => requestSort("amount_status")}
-                className={getClassNamesFor("amount_status")}
-              >
-                AMOUNT STATUS
+                QUARANTINE
               </button>
             </th>
             <th>
@@ -102,15 +125,6 @@ const ActivityTable = (props) => {
                 className={getClassNamesFor("amount")}
               >
                 AMOUNT
-              </button>
-            </th>
-            <th>
-              <button
-                type="button"
-                onClick={() => requestSort("driver_name")}
-                className={getClassNamesFor("driver_name")}
-              >
-                DRIVER NAME
               </button>
             </th>
             <th>
@@ -127,15 +141,21 @@ const ActivityTable = (props) => {
         <tbody>
           {items.map((item, key) => (
             <tr key={key}>
+              <td>
+                <input
+                  type="checkbox"
+                  onChange={() => prepareReadyToDeliveryItems(item)}
+                  style={{ width: 15, height: 15,cursor:"pointer" }}
+                  checked={readyToDeliveryListRecords.some(rdl => rdl._id === item._id)}
+                />
+              </td>
               <td>{item.name}</td>
               <td>{item.phone}</td>
               <td>
                 {moment(new Date(item.created_date)).format("DD MMM YYYY")}
               </td>
-              <td className="text-center">-</td>
-              <td className="text-center">-</td>
-              <td className="text-center">${item.amount}</td>
-              <td className="text-center">-</td>
+              <td>{item.quarantine_status ? "Yes" : "No"}</td>
+              <td>${item.amount}</td>
               <td>{item.delivery_status}</td>
             </tr>
           ))}
@@ -144,67 +164,6 @@ const ActivityTable = (props) => {
       {/* <div className="d-flex justify-content-center">
         <button className="row btn btn-info load-more-button">Load More</button>
       </div> */}
-    </>
-  );
-};
-
-export default function Activity() {
-  const [date, setDate] = useState(null);
-  const [activityList, setActivityList] = useState([]);
-  useEffect(() => {
-    let user_id = JSON.parse(localStorage.getItem("userData"))._id;
-    commonUtils.getActivityOrders(user_id).then((response) => {
-      if (response && response.status === "success") {
-        setActivityList(response.data);
-      }
-    });
-  }, []);
-
-  return (
-    <>
-      {activityList && activityList.length > 0 ? (
-        <div className="container">
-          <div className="row">
-            <div className="orders">Activity</div>
-          </div>
-          <div className="row py-3 align-items-center">
-            <div className="col-md-6">
-              <input
-                type="text"
-                placeholder="Search"
-                className="search-bar"
-              ></input>
-            </div>
-            <div className="col-md-6 d-flex justify-content-end align-items-center">
-              <div className="order-date-picker mr-3">
-                <DatePicker
-                  className="w-100"
-                  onChange={setDate}
-                  value={date}
-                  yearPlaceholder="yyyy"
-                  monthPlaceholder="mm"
-                  dayPlaceholder="dd"
-                />
-              </div>
-            </div>
-          </div>
-          <ActivityTable orders={activityList} />
-        </div>
-      ) : (
-        <div className="dashboard hv-85 align-items-center">
-          <div>
-            <img
-              className="no-orders-icon"
-              alt="no-activity"
-              src="/images/icons/no-activity@3x.png"
-            />
-            <div className="no-orders-title">No Activity</div>
-            <div className="you-dont-have-any-orders-right-now">
-              You don’t have any activity right now.
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
